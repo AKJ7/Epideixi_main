@@ -28,7 +28,7 @@ int minute;
 
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_RST);
 OneWire  ds(13);
-
+int counter = 0;
 
 void setup(){
   
@@ -46,10 +46,17 @@ void setup(){
     WiFi.mode(WIFI_OFF);
     tft.begin();
     tft.setRotation(3);
-    tft.fillScreen(0x0000);
+    tft.fillScreen(0xFFFF);
     tft.setTextColor(0xFFFF);
-    char tex[13] = "hallo world";
-    tft.println(tex);
+    int width = 0;
+    int height = 10;
+    while (width < 200){
+      tft.fillRect(60, 150, width, height, 0x0000);
+      width++;
+      delay(10);  
+    }
+    tft.fillScreen(0x0000);
+      
 }
 
 
@@ -61,11 +68,15 @@ void loop(){
     int *ptr = printLocalTime();
 //    //if (minute != ptr[1]){
 //      //minute = ptr[1];
-      homePage(ptr[2], ptr[1]);
+    while (counter < 1000){
+      homePage(counter, ptr[1]);
+      counter++;
+      delay(500);
+      }
 //    //}
 //    //printf("Hour: %d, Minute: %d, timeHour: %d, timeMinute: %d\n", hour, minute, ptr[2], ptr[1]);
 //  }
-  delay(500);
+  
 }
 
 

@@ -5,36 +5,48 @@ class GUI_Element{
         int y;
         int objColor;
         int objSize;
-        char objText[];
-
+        String objText;
+        
     public:
-        void set(int x_Pos, int y_Pos, int color, int textSize, char text[]){
+        void set(int x_Pos, int y_Pos, int color, int textSize, String text){
           x = x_Pos;
           y = y_Pos;
           objColor = color;
           objSize = textSize;
-          strcpy(objText, text);
         }
-        char *getValue(){
-          char *p;
-          p = objText;
-          return p;
+//        char*getValue(){
+//          char alt[sizeof(objText)+1];
+//          objText.toCharArray(alt, sizeof(objText)+1);
+//          char *p;
+//          p = alt;
+//          return p; 
+//        }
+        int getValue2(){
+          return y;
         }
-        GUI_Element(int x_Pos, int y_Pos, int color, int objSize, char text[]);
+        void displayElement(int x_Pos, int y_Pos, int color, int textSize, String text){
+            int16_t x1, y1;
+            uint16_t w, h;
+            tft.getTextBounds(text, x_Pos, y_Pos, &x1, &y1, &w, &h);
+            tft.fillRect(x1, y1, w, h, 0x0000);
+            tft.setTextColor(color);
+            tft.setTextSize(textSize);
+            tft.setCursor(x_Pos, y_Pos);
+            tft.println(text);
+        }
+        GUI_Element(int x_Pos, int y_Pos, int color, int textSize, String text);
 };
 
-GUI_Element::GUI_Element(int x_Pos, int y_Pos, int color, int objSize, char text[]){
-  printf("%c%c%c\n", *getValue(), *(getValue()+1), *(getValue()+2));
-  set(x_Pos, y_Pos, color, objSize, text);
+GUI_Element::GUI_Element(int x_Pos, int y_Pos, int color, int textSize, String text){
+  //printf("%c\n", *getValue());
+  set(x_Pos, y_Pos, color, textSize, text);
+  
+  displayElement(x_Pos, y_Pos, color, textSize, text);
 }
 
 void homePage(int value1, int value2){
-  char test[] = "hallos";
-  GUI_Element HP_time(0, 0, 0, 10, test);
-  printf("%d\n", HP_time.getValue());
+  GUI_Element HP_time(0, 22, 0xFFFF, 3, String(value1));
 }
-
-
 
 
 
