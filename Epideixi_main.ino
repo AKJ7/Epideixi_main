@@ -4,7 +4,7 @@
 #include "Fonts/Open_Sans_Regular_16.h"
 #include "Fonts/Kranky_Regular_30.h"
 #include "Fonts/Crafty_Girls_Regular_13.h"
-#include "WiFi.h"
+#include "WiFiClientSecure.h"
 #include "time.h"
 #include "OneWire.h"
 
@@ -22,6 +22,9 @@ Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_RST);
 const char* ssid       = "AKJ WLAN";
 const char* password   = "AKJ.WLAN1234";
 const char* ntpServer  = "pool.ntp.org";
+const char* server = "script.google.com";
+const char* key = "AKfycbwulCXPwNmzvC0N8Aayes3aXc-4OGotKNKZ0Ma1UKA1EqVcvlA";
+String URL = "https://script.google.com/macros/s/AKfycbzvjMIxqgEo49PkDa0HcyXUb7h8WcTjZpIGTA4fYMNO7-Ub5gE/exec";
 const long  gmtOffset_sec = 3600;
 const int   daylightOffset_sec = 3600;
 unsigned long currentMillis = 0;
@@ -32,14 +35,18 @@ int hour;
 int minute;
 int innerTemp;
 
+String movedURL;
+String line;
+
 uint8_t switchVar;
 
+WiFiClientSecure client;
 OneWire  ds(13);
-int counter = 0;
 
 
 GUI_Element HP_Clock;
 GUI_Element HP_Temp;
+GUI_Element fromGoogle;
 
 void setup(){
 
@@ -71,15 +78,70 @@ void setup(){
 //    }
     try{
         while (true){
+          
             loading.displayElement("Connecting to "+String(ssid), 30, 200, 0x0000, 2, 0xFFFF);
             WiFi.begin(ssid, password);
             delay(2000);
             if (WiFi.status() != WL_CONNECTED){
+                loading.displayElement("Connection to WiFi failed", 30, 200, 0x0000, 2, 0xFFFF);
                 throw 1;
                 break;
             }
             loading.displayElement("Connected to "+String(ssid), 30, 200, 0x0000, 2, 0xFFFF);
             delay(1000);
+
+            loading.displayElement("Connecting to Google", 30, 200, 0x0000, 2, 0xFFFF);
+            if (!client.connect(server, 443)){
+                loading.displayElement("Connection to Google failed!", 30, 200, 0x0000, 2, 0xFFFF);
+                throw 2;
+                break;
+            }
+            loading.displayElement("Connection to Google sucessful!", 30, 200, 0x0000, 2, 0xFFFF);
+            client.println("GET "+URL);
+            client.println("Host: script.google.com");
+            client.println("Connection: close");
+            client.println();
+
+            while (client.connected()){
+                line = client.readStringUntil('\n');
+                Serial.println(line);
+                if (line == "\r") break;
+                if (line.indexOf("Location") >= 0){
+                    movedURL = line.substring(line.indexOf(":")+2);
+                }
+            }
+            while (client.connected()){
+              if (client.available()){
+                line = client.readStringUntil('\n');
+                Serial.println(line);
+              }
+            }
+            client.stop();
+
+            movedURL.trim();
+            Serial.println("New URL: \""+movedURL+"\"");
+            if (!client.connect(server, 443)){
+                Serial.println("Redirecting failed!");
+            }
+            Serial.println("Connected!");
+            client.println("GET "+movedURL);
+            client.println("Host: script.google.com");
+            client.println("Connection: close");
+            client.println();
+
+            while (client.connected()){
+                line = client.readStringUntil('\n');
+                Serial.println(line);
+                if (line == "\r") break;
+            }
+            while (client.connected()){
+                if (client.available()){
+                   line = client.readString();
+                   Serial.println(line);
+                }
+            }
+            client.stop();
+            if (line == "OK") Serial.println("OK!");
             break;
         }
     } catch (int error){
@@ -108,7 +170,7 @@ void loop(){
       printf("%g\n", roomTemp());
     }
     HP_Temp.displayElement(String(roomTemp()), 100, 110, 0xFFFF, 3);
-    
+    fromGoogle.displayElement(String(line), 100, 200);
     delay(2000);
 }
 
