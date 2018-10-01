@@ -1,6 +1,7 @@
 #include "SPI.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
+#include "Fonts/Open_Sans_Regular_16.h"
 #include "Fonts/Kranky_Regular_30.h"
 #include "Fonts/Crafty_Girls_Regular_13.h"
 #include "WiFi.h"
@@ -50,6 +51,7 @@ void setup(){
     tft.begin();
     tft.setRotation(3);
     tft.fillScreen(0xFFFF);
+    //tft.setFont(&Open_Sans_Regular_16);
     tft.setTextColor(0xFFFF);
     int width = 0;
     int height = 10;
@@ -105,9 +107,9 @@ void loop(){
     if (roomTemp() != 0){
       printf("%g\n", roomTemp());
     }
-    HP_Temp.displayElement(String(roomTemp())+"C", 100, 110, 0xFFFF, 2);
+    HP_Temp.displayElement(String(roomTemp()), 100, 110, 0xFFFF, 3);
     
-    delay(1000);
+    delay(2000);
 }
 
 

@@ -1,4 +1,4 @@
-float roomTemp(void) {
+float roomTemp() {
   byte i;
   byte present = 0;
   byte type_s;

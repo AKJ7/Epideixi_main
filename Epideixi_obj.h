@@ -41,6 +41,7 @@ class GUI_Element{
            tft.setTextSize(textSize);
            tft.setCursor(x_Pos, y_Pos);
            tft.println(text);
+           printf("Width: %d, Height: %d, x1: %d, y1: %d\n", w, h, x1, y1);
         }
        
        //GUI_Element(String text, int x_Pos, int y_Pos, int color, int textSize);
