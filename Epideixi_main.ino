@@ -14,9 +14,13 @@
 #define TFT_MOSI 23           
 #define TFT_CLK 18 
 
+Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_RST);
+
+#include "Epideixi_obj.h"
+
 const char* ssid       = "AKJ WLAN";
 const char* password   = "AKJ.WLAN1234";
-const char* ntpServer = "pool.ntp.org";
+const char* ntpServer  = "pool.ntp.org";
 const long  gmtOffset_sec = 3600;
 const int   daylightOffset_sec = 3600;
 unsigned long currentMillis = 0;
@@ -25,58 +29,85 @@ float roomTemperature = 0;
 float oldRoomTemperature = 0;
 int hour;
 int minute;
+int innerTemp;
 
-Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_RST);
+uint8_t switchVar;
+
 OneWire  ds(13);
 int counter = 0;
 
+
+GUI_Element HP_Clock;
+GUI_Element HP_Temp;
+
 void setup(){
-  
+
+    GUI_Element loading;
+    GUI_Element deviceName;
+    
     Serial.begin(115200);
-    Serial.printf("Connecting to %s ", ssid);
-    WiFi.begin(ssid, password);
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
-    }
-    Serial.println(" CONNECTED");
-    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-    printLocalTime();
-    WiFi.disconnect(true);
-    WiFi.mode(WIFI_OFF);
+    
     tft.begin();
     tft.setRotation(3);
     tft.fillScreen(0xFFFF);
     tft.setTextColor(0xFFFF);
     int width = 0;
     int height = 10;
-    while (width < 200){
-      tft.fillRect(60, 150, width, height, 0x0000);
-      width++;
-      delay(10);  
+    deviceName.displayElement("Epidexi", 40, 30, 0x49AC, 6);
+//    while (width < 200){
+//      tft.fillRect(60, 150, width, height, 0x0000);
+//      width++;
+//      delay(10);
+//      try{
+//          switch(switchVar){
+//            default:
+//            switchVar = width;   
+//          }
+//      } catch(int e){
+//        
+//      }
+//    }
+    try{
+        while (true){
+            loading.displayElement("Connecting to "+String(ssid), 30, 200, 0x0000, 2, 0xFFFF);
+            WiFi.begin(ssid, password);
+            delay(2000);
+            if (WiFi.status() != WL_CONNECTED){
+                throw 1;
+                break;
+            }
+            loading.displayElement("Connected to "+String(ssid), 30, 200, 0x0000, 2, 0xFFFF);
+            delay(1000);
+            break;
+        }
+    } catch (int error){
+          switch(error){
+              case 1:
+                  loading.displayElement("Can't connect to "+String(ssid), 30, 200, 0x0000, 2, 0xFFFF);
+                  break;
+              default:
+                  loading.displayElement("An error occured!", 30, 200, 0x0000, 2, 0xFFFF);    
+          }
     }
+    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+    printLocalTime();
+    WiFi.disconnect(true);
+    WiFi.mode(WIFI_OFF);
     tft.fillScreen(0x0000);
-      
 }
 
 
 void loop(){
-  
-//  if (millis() - currentMillis > 3000){
-//    currentMillis = millis();
-//    
+     
     int *ptr = printLocalTime();
-//    //if (minute != ptr[1]){
-//      //minute = ptr[1];
-    while (counter < 1000){
-      homePage(counter, ptr[1]);
-      counter++;
-      delay(500);
-      }
-//    //}
-//    //printf("Hour: %d, Minute: %d, timeHour: %d, timeMinute: %d\n", hour, minute, ptr[2], ptr[1]);
-//  }
-  
+    
+    HP_Clock.displayElement(String(ptr[2])+":"+String(ptr[1]), 40, 20, 0xFFFF, 8);
+    if (roomTemp() != 0){
+      printf("%g\n", roomTemp());
+    }
+    HP_Temp.displayElement(String(roomTemp())+"C", 100, 110, 0xFFFF, 2);
+    
+    delay(1000);
 }
 
 

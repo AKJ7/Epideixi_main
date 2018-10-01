@@ -1,54 +1,45 @@
-class GUI_Element{
-    
-    private:
-        int x;
-        int y;
-        int objColor;
-        int objSize;
-        String objText;
-        
-    public:
-        void set(int x_Pos, int y_Pos, int color, int textSize, String text){
-          x = x_Pos;
-          y = y_Pos;
-          objColor = color;
-          objSize = textSize;
-        }
-//        char*getValue(){
-//          char alt[sizeof(objText)+1];
-//          objText.toCharArray(alt, sizeof(objText)+1);
-//          char *p;
-//          p = alt;
-//          return p; 
+//class GUI_Element{
+//    
+//    private:
+//        int x;
+//        int y;
+//        int objColor;
+//        int objSize;
+//        String objText;
+//        
+//    public:
+//        void set(int x_Pos, int y_Pos, int color, int textSize, String text){
+//          x = x_Pos;
+//          y = y_Pos;
+//          objColor = color;
+//          objSize = textSize;
 //        }
-        int getValue2(){
-          return y;
-        }
-        void displayElement(int x_Pos, int y_Pos, int color, int textSize, String text){
-            int16_t x1, y1;
-            uint16_t w, h;
-            tft.getTextBounds(text, x_Pos, y_Pos, &x1, &y1, &w, &h);
-            tft.fillRect(x1, y1, w, h, 0x0000);
-            tft.setTextColor(color);
-            tft.setTextSize(textSize);
-            tft.setCursor(x_Pos, y_Pos);
-            tft.println(text);
-        }
-        GUI_Element(int x_Pos, int y_Pos, int color, int textSize, String text);
-};
-
-GUI_Element::GUI_Element(int x_Pos, int y_Pos, int color, int textSize, String text){
-  //printf("%c\n", *getValue());
-  set(x_Pos, y_Pos, color, textSize, text);
-  
-  displayElement(x_Pos, y_Pos, color, textSize, text);
-}
-
-void homePage(int value1, int value2){
-  GUI_Element HP_time(0, 22, 0xFFFF, 3, String(value1));
-}
-
-
+//        int getValue2(){
+//          return y;
+//        }
+//        void displayElement(int x_Pos, int y_Pos, int color, int textSize, String text){
+//            int16_t x1, y1;
+//            uint16_t w, h;
+//            tft.getTextBounds(text, x_Pos, y_Pos, &x1, &y1, &w, &h);
+//            tft.fillRect(x1, y1, w, h, 0x0000);
+//            tft.setTextColor(color);
+//            tft.setTextSize(textSize);
+//            tft.setCursor(x_Pos, y_Pos);
+//            tft.println(text);
+//        }
+//        GUI_Element(int x_Pos, int y_Pos, int color, int textSize, String text);
+//};
+//
+//GUI_Element::GUI_Element(int x_Pos, int y_Pos, int color, int textSize, String text){
+//  //printf("%c\n", *getValue());
+//  set(x_Pos, y_Pos, color, textSize, text);
+//  
+//  displayElement(x_Pos, y_Pos, color, textSize, text);
+//}
+//
+//void homePage(int value1, int value2){
+//  GUI_Element HP_time(0, 22, 0xFFFF, 3, String(value1));
+//}
 
 
 
