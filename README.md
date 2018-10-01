@@ -1,4 +1,5 @@
-#Description
+
+# Description  
 
 Epideixi is a device, i decided to build as an interface to get important ntoifications, as emails, calendar events or 
 room temperature without turning to my phone.  
