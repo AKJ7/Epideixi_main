@@ -43,11 +43,24 @@ class GUI_Element{
            tft.println(text);
            //printf("Width: %d, Height: %d, x1: %d, y1: %d\n", w, h, x1, y1);
         }
-       
+       void centerElement(){
+//           int16_t x1, y1;
+//           uint16_t w, h;
+//           tft.getTextBounds(text, x_Pos, y_Pos, &x1, &y1, &w, &h);
+           
+       }
        //GUI_Element(String text, int x_Pos, int y_Pos, int color, int textSize);
 };
 
 //GUI_Element::GUI_Element(String text, int x_Pos, int y_Pos, int color, int textSize){
     //set(text, x_Pos, y_Pos, color, textSize);
 //}
+
+
+class newGUI{
+    private:
+        String text;
+        int x;
+        int y;
+};
 

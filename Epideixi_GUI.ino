@@ -1,6 +1,7 @@
-
-
-
+void defaultHP_state(){
+  
+  tft.setFont();
+}
 
 //class GUI_Element{
 //    

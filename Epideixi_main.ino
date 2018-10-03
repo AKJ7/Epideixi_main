@@ -1,7 +1,11 @@
+/****
+ * Color Palette:  Navy blue: #18121E, Gunmetal: #233237, Rusty Red: #984B43, Warm Yellow: #EAC67A
+ * 
+*/
 #include "SPI.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
-#include "Fonts/Open_Sans_Regular_16.h"
+#include "Fonts/Lato_Light_13.h"
 #include "Fonts/Kranky_Regular_30.h"
 #include "Fonts/Crafty_Girls_Regular_13.h"
 #include "WiFiClientSecure.h"
@@ -34,144 +38,59 @@ float oldRoomTemperature = 0;
 int hour;
 int minute;
 int innerTemp;
+//int *ptr;
 
 String movedURL;
 String line;
 
+bool firstLaunch = true;
+
 uint8_t switchVar;
+uint16_t counter = 0;
+uint64_t timer = 0;
 
 WiFiClientSecure client;
 OneWire  ds(13);
-
 
 GUI_Element HP_Clock;
 GUI_Element HP_Temp;
 GUI_Element fromGoogle;
 
-void setup(){
 
-    GUI_Element loading;
-    GUI_Element deviceName;
-    
+void setup(){
     Serial.begin(115200);
     
-    tft.begin();
-    tft.setRotation(3);
-    tft.fillScreen(0xFFFF);
-    //tft.setFont(&Open_Sans_Regular_16);
-    tft.setTextColor(0xFFFF);
-    int width = 0;
-    int height = 10;
-    deviceName.displayElement("Epidexi", 40, 30, 0x49AC, 6);
-//    while (width < 200){
-//      tft.fillRect(60, 150, width, height, 0x0000);
-//      width++;
-//      delay(10);
-//      try{
-//          switch(switchVar){
-//            default:
-//            switchVar = width;   
-//          }
-//      } catch(int e){
-//        
-//      }
-//    }
-    try{
-        while (true){
-          
-            loading.displayElement("Connecting to "+String(ssid), 30, 200, 0x0000, 2, 0xFFFF);
-            WiFi.begin(ssid, password);
-            delay(2000);
-            if (WiFi.status() != WL_CONNECTED){
-                loading.displayElement("Connection to WiFi failed", 30, 200, 0x0000, 2, 0xFFFF);
-                throw 1;
-                break;
-            }
-            loading.displayElement("Connected to "+String(ssid), 30, 200, 0x0000, 2, 0xFFFF);
-            delay(1000);
-
-            loading.displayElement("Connecting to Google", 30, 200, 0x0000, 2, 0xFFFF);
-            if (!client.connect(server, 443)){
-                loading.displayElement("Connection to Google failed!", 30, 200, 0x0000, 2, 0xFFFF);
-                throw 2;
-                break;
-            }
-            loading.displayElement("Connection to Google sucessful!", 30, 200, 0x0000, 2, 0xFFFF);
-            client.println("GET "+URL);
-            client.println("Host: script.google.com");
-            client.println("Connection: close");
-            client.println();
-
-            while (client.connected()){
-                line = client.readStringUntil('\n');
-                Serial.println(line);
-                if (line == "\r") break;
-                if (line.indexOf("Location") >= 0){
-                    movedURL = line.substring(line.indexOf(":")+2);
-                }
-            }
-            while (client.connected()){
-              if (client.available()){
-                line = client.readStringUntil('\n');
-                Serial.println(line);
-              }
-            }
-            client.stop();
-
-            movedURL.trim();
-            Serial.println("New URL: \""+movedURL+"\"");
-            if (!client.connect(server, 443)){
-                Serial.println("Redirecting failed!");
-            }
-            Serial.println("Connected!");
-            client.println("GET "+movedURL);
-            client.println("Host: script.google.com");
-            client.println("Connection: close");
-            client.println();
-
-            while (client.connected()){
-                line = client.readStringUntil('\n');
-                Serial.println(line);
-                if (line == "\r") break;
-            }
-            while (client.connected()){
-                if (client.available()){
-                   line = client.readString();
-                   Serial.println(line);
-                }
-            }
-            client.stop();
-            if (line == "OK") Serial.println("OK!");
-            break;
-        }
-    } catch (int error){
-          switch(error){
-              case 1:
-                  loading.displayElement("Can't connect to "+String(ssid), 30, 200, 0x0000, 2, 0xFFFF);
-                  break;
-              default:
-                  loading.displayElement("An error occured!", 30, 200, 0x0000, 2, 0xFFFF);    
-          }
-    }
+    TFT_default();
+    display_title();
+    display_loadingstatus();
     configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
     printLocalTime();
-    WiFi.disconnect(true);
-    WiFi.mode(WIFI_OFF);
+//    WiFi.disconnect(true);
+//    WiFi.mode(WIFI_OFF);
     tft.fillScreen(0x0000);
+    
 }
 
 
 void loop(){
-     
-    int *ptr = printLocalTime();
-    
-    HP_Clock.displayElement(String(ptr[2])+":"+String(ptr[1]), 40, 20, 0xFFFF, 8);
-    if (roomTemp() != 0){
-      printf("%g\n", roomTemp());
-    }
-    HP_Temp.displayElement(String(roomTemp()), 100, 110, 0xFFFF, 3);
-    fromGoogle.displayElement(String(line), 100, 200);
+    //if (millis() - timer > 2000 || firstLaunch == true){
+    //    timer = millis();
+        int *ptr = printLocalTime();  
+    //}
+    defaultHP_state();
+    HP_Clock.displayElement(String(ptr[2])+":"+String(ptr[1]), 40, 100, 0xEE2F, 6);
+//    if (roomTemp() != 0){
+//      printf("%g\n", roomTemp());
+//    }
+//    HP_Temp.displayElement(String(roomTemp()), 100, 110, 0xFFFF, 3);
+//    fromGoogle.displayElement(String(line), 100, 200);
+    tft.setFont(&Lato_Light_13);
+    tft.setCursor(0, 180);
+    tft.setTextSize(1);
+    tft.println("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.");
     delay(2000);
+//    Serial.println(WiFi.RSSI());
+//    firstLaunch = false;
 }
 
 

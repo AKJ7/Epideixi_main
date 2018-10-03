@@ -1,0 +1,15 @@
+CONNECTION EPIDEIXI
+_______________________
+
+
+ILI9341          ESP32
+
+SDI(MISO)	D19
+LED		3v3
+SCK		D18
+SDI(MOSI)	D23
+DC		D4
+RESET		D2
+CS		D15
+GND		GND
+VCC		3v3 
