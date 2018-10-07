@@ -55,7 +55,9 @@ OneWire  ds(13);
 GUI_Element HP_Clock;
 GUI_Element HP_Temp;
 GUI_Element fromGoogle;
-
+GUI_Object Clock(20, 20, 2, 0xFFFF, "Hallo World", 0x001F);
+GUI_Object Temp_in(20, 20, 2, 0xFFFF, "24", 0xFFE0);
+GUI_Object Temp_out(20, 20, 2, 0xFFFF, "12", 0x07E8);
 
 void setup(){
     Serial.begin(115200);
@@ -73,24 +75,38 @@ void setup(){
 
 
 void loop(){
-    //if (millis() - timer > 2000 || firstLaunch == true){
-    //    timer = millis();
-        int *ptr = printLocalTime();  
-    //}
-    defaultHP_state();
-    HP_Clock.displayElement(String(ptr[2])+":"+String(ptr[1]), 40, 100, 0xEE2F, 6);
-//    if (roomTemp() != 0){
-//      printf("%g\n", roomTemp());
-//    }
-//    HP_Temp.displayElement(String(roomTemp()), 100, 110, 0xFFFF, 3);
-//    fromGoogle.displayElement(String(line), 100, 200);
-    tft.setFont(&Lato_Light_13);
-    tft.setCursor(0, 180);
-    tft.setTextSize(1);
-    tft.println("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.");
-    delay(2000);
-//    Serial.println(WiFi.RSSI());
-//    firstLaunch = false;
+//    //if (millis() - timer > 2000 || firstLaunch == true){
+//    //    timer = millis();
+//        int *ptr = printLocalTime();  
+//    //}
+//    defaultHP_state();
+//    HP_Clock.displayElement(String(ptr[2])+":"+String(ptr[1]), 40, 100, 0xEE2F, 6);
+////    if (roomTemp() != 0){
+////      printf("%g\n", roomTemp());
+////    }
+////    HP_Temp.displayElement(String(roomTemp()), 100, 110, 0xFFFF, 3);
+////    fromGoogle.displayElement(String(line), 100, 200);
+// 
+//    delay(2000);
+////    Serial.println(WiFi.RSSI());
+////    firstLaunch = false;
+    
+    Clock.displayRect(0, 0, 200, 160, 0x001F);
+    Temp_in.displayRect(200, 0, 120, 80, 0xFFE0);
+    Temp_out.displayRect(200, 80, 120, 80, 0x07E8);
+    while (1){
+        roomTemperature = roomTemp();
+        int *ptr = printLocalTime();
+        Clock.displayText(20, 50, String(ptr[2])+":"+String(ptr[1]), 0xFFFF, 2);
+        Temp_out.displayText(220, 120, String(line), 0x0000, 2);
+        if (roomTemperature != 0){
+            Temp_in.displayText(220, 40, String(roomTemperature), 0x0000, 2);  
+        }
+          
+        Serial.println(line);
+        delay(5000); 
+    }
+    
 }
 
 
