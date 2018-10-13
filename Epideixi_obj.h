@@ -12,7 +12,6 @@ class GUI_Element{
         int objSize_default;
         int objColor_default;
         String objText_default;
-        
 
     public:
        void set(String text, int x_Pos, int y_Pos, int color, int textSize){
@@ -108,4 +107,3 @@ int GUI_Object::displayText(int x_Pos, int y_Pos, String text, int textColor, in
 GUI_Object::GUI_Object(int x_Pos, int y_Pos, int textSize, int textColor, String text, int backgroundColor){
   set(x_Pos, y_Pos, textSize, textColor, text, backgroundColor);
 }
-

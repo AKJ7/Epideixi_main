@@ -1,38 +1,52 @@
 GUI_Element deviceName;
-GUI_Element loading; 
+GUI_Element loading;
+GUI_Object loadingMessage(0, 200, 1, 0xFFFF, "Welcome!", 0x1986); 
 
-void TFT_default(){
-    tft.begin();
-    tft.setRotation(3);
-    tft.fillScreen(0x1986);
-    tft.setFont(&Lato_Light_13);
-    tft.setTextColor(0xFFFF);
-}
-
-//
-void display_title(void){
+void loadingPage(){
+  
     deviceName.displayElement("EPIDEIXI", 40, 100, 0xFFFF, 4);
+    loadingMessage.displayText(0, 200, "Booting!", 0xFFFF, 1);
+    try{
+        loadingMessage.displayText(0, 200, "Connecting to "+String(ssid), 0xFFFF, 1);
+        if (WiFiManager(ssid, password, 1) != 1){
+            throw "Can't connect to the WiFi!";
+        }
+        loadingMessage.displayText(0, 200, "Connected to: "+String(ssid), 0xFFFF, 1);
+        loadingMessage.displayText(0, 200, "Connecting to Google", 0xFFFF, 1);
+        HTTP_Redirect(1, 0, 0, 0); // Weather, Calendar, Mail, Radio
+        loadingMessage.displayText(0, 200, "Redirecting ... ", 0xFFFF, 1);
+        HTTP_Connect();
+        loadingMessage.displayText(0, 200, "Connected to Google", 0xFFFF, 1);
+        Serial.println(line);
+        //loadingMessage.displayText(0, 200, line, 0xFFFF, 1);
+        
+      
+    } catch(const char error[]){
+        loadingMessage.displayText(0, 200, error, 0xFFFF, 1);
+        printf("Error: %s\n", error);
+    }
 }
 
 
 void display_loadingstatus(void){
-  try{
+    try{
         while (true){
           
-            loading.displayElement("Connecting to "+String(ssid), 30, 200, 0x0000, 1, 0xFFFF);
-            WiFi.begin(ssid, password);
-            while (WiFi.status() != WL_CONNECTED){
-                if (counter >= 20000){
-                  loading.displayElement("Connection to WiFi failed", 30, 200, 0x0000, 1, 0xFFFF);
-                  throw 1;
-                  break;
-                }
-                delay(10);
-                counter++;
-            }
-            
-            loading.displayElement("Connected to "+String(ssid), 30, 200, 0x0000, 1, 0xFFFF);
-            delay(500);
+//            loading.displayElement("Connecting to "+String(ssid), 30, 200, 0x0000, 1, 0xFFFF);
+//            
+//            WiFi.begin(ssid, password);
+//            while (WiFi.status() != WL_CONNECTED){
+//                if (counter >= 20000){
+//                  loading.displayElement("Connection to WiFi failed", 30, 200, 0x0000, 1, 0xFFFF);
+//                  throw 1;
+//                  break;
+//                }
+//                delay(10);
+//                counter++;
+//            }
+//            
+//            loading.displayElement("Connected to "+String(ssid), 30, 200, 0x0000, 1, 0xFFFF);
+//            delay(500);
 
             loading.displayElement("Connecting to Google", 30, 200, 0x0000, 1, 0xFFFF);
             if (!client.connect(server, 443)){

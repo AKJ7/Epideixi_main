@@ -1,0 +1,4 @@
+https://script.googleusercontent.com/macros/echo?user_content_key=KrgU857b_MpI4Xj1eGoc_H2bCD-hphwmElzkxL1hN90bACM8Sh1W3vcFIm8UPR3fDlmfdLkYP2yDjZ007T6u073JbWOaw-Blm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnEIpBycYtl4Pd4wXw5if1TTZ3NJA91RwAvVk9FeKgscM2zQVdzo3mvUUFvJhwayW2KOIp7sEUsJ2&lib=MGkT9lZ3KGNmMGvlNtT_PpP0P_ayHuz1V
+
+
+{"parameter":{"age":"21","username":"jsmith"},"contextPath":"","contentLength":-1,"queryString":"username=jsmith&age=21","parameters":{"age":["21"],"username":["jsmith"]}}
