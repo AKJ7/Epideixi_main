@@ -21,7 +21,7 @@ void loadingPage(){
         //loadingMessage.displayText(0, 200, line, 0xFFFF, 1);
         
       
-    } catch(const char error[]){
+    } catch(const char *error){
         loadingMessage.displayText(0, 200, error, 0xFFFF, 1);
         printf("Error: %s\n", error);
     }

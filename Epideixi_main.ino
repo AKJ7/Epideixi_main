@@ -1,17 +1,4 @@
-/****
- * Color Palette:  Navy blue: #18121E, Gunmetal: #233237, Rusty Red: #984B43, Warm Yellow: #EAC67A
- * 
-*/
-
-
-#include "SPI.h"
-#include "Adafruit_GFX.h"
-#include "Adafruit_ILI9341.h"
-#include "Fonts/Lato_Light_13.h"
-#include "Fonts/Kranky_Regular_30.h"
-#include "WiFiClientSecure.h"
-#include "time.h"
-#include "OneWire.h"
+#include "src/Epideixi_Plugins.h"
 
 #define TFT_DC 4
 #define TFT_CS 15
@@ -62,7 +49,6 @@ void setup(){
     Serial.begin(115200);
     TFT_default();
     tft.fillScreen(0x1986);
-    
     loadingPage();    
     //display_loadingstatus();
     

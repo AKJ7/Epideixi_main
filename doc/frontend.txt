@@ -1,0 +1,4 @@
+/****
+ * Color Palette:  Navy blue: #18121E, Gunmetal: #233237, Rusty Red: #984B43, Warm Yellow: #EAC67A
+ * 
+*/
